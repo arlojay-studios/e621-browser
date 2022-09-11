@@ -203,3 +203,41 @@ body {
     text-overflow: ellipsis;
     line-clamp: 2;
 }
+
+@keyframes animation-down {
+    0% {
+        color: currentColor;
+        transform: scale(1);
+    }
+    100% {
+        color: currentColor;
+        transform: scale(1.2);
+    }
+}
+
+@keyframes animation-up {
+    0% {
+        color: currentColor;
+        transform: scale(1.2);
+    }
+    100% {
+        color: currentColor;
+        transform: scale(1);
+    }
+}
+
+#likes i:active {
+    animation: animation-down .15s ease-in;
+    animation-fill-mode: forwards;
+}
+#likes i:not(:active) {
+    animation: animation-up .15s ease-out;
+}
+
+#info i:active {
+    animation: animation-down .15s ease-in;
+    animation-fill-mode: forwards;
+}
+#info i:not(:active) {
+    animation: animation-up .15s ease-out;
+}
