@@ -1,5 +1,17 @@
 const WEBSITE_URL = "https://e621.net";
-const blacklistPage = document.querySelector("#blacklist-warning button");
+const blacklistPage = document.querySelector("#blacklist-warning");
+
+const blacklistedTags = [
+    "gore",
+    "scat",
+    "watersports",
+    "young",
+    "loli",
+    "shota",
+    "feces",
+    "fart",
+    "peeing",
+]
 
 function cloneTemplate(id) {
     const template = document.querySelector("#template_" + id);
@@ -76,6 +88,30 @@ async function load() {
     const imageElem = document.querySelector("#image").querySelector("img");
     imageElem.src = post.file.url;
 
+    const blacklist = [];
+    for(let k of Object.keys(post.tags)) {
+        post.tags[k].filter(d => 
+            blacklistedTags.includes(d)
+        ).forEach(b =>
+            blacklist.push(b)
+        );
+    }
+
+    if(blacklist.length > 0) {
+        blacklistPage.hidden = false;
+        const list = blacklistPage.querySelector("ul");
+
+        for(let child of list.children) {
+            child.remove();
+        }
+
+        for(let tag of blacklist) {
+            const li = document.createElement("li");
+            li.innerText = tag[0].toUpperCase() + tag.slice(1);
+            list.appendChild(li);
+        }
+    }
+
     resizeImage()
 
     const profile = await getUserProfile(post.uploader_id);
@@ -89,6 +125,6 @@ load().catch(e => {
 window.addEventListener("resize", resizeImage);
 
 
-blacklistPage.addEventListener("click", e => {
-    
+blacklistPage.querySelector("button").addEventListener("click", e => {
+    blacklistPage.hidden = true;
 })
