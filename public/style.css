@@ -241,3 +241,12 @@ body {
 #info i:not(:active) {
     animation: animation-up .15s ease-out;
 }
+.popup {
+    position: fixed;
+    visibility: hidden;
+    width: 90%;
+    height: 90%;
+    margin: 5%;
+    z-index: 2;
+    background-color: #555;
+}

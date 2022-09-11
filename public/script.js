@@ -6,6 +6,8 @@ const comments = document.querySelector("#comments .count");
 const commentsIcon = document.querySelector("#comments .fas");
 const download = document.querySelector("#download .fas");
 const infoIcon = document.querySelector("#info .fas");
+const popup = document.querySelector('.popup');
+const popupText = document.querySelector('#popupText');
 const blacklistedTags = [
     "gore",
     "scat",
@@ -160,5 +162,5 @@ let i = 0;
 })
 
 infoIcon.addEventListener("onclick", e => {
-    
+   popupText.classList.toggle("visible");
 })
