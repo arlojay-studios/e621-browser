@@ -2,6 +2,9 @@
   "name": "e621-browser",
   "version": "1.0.0",
   "description": "An e621 browser inspired by quick-scrolling content apps such as Tiktok and YouTube Shorts.",
+  "scripts": {
+    "serve": "npx serve ."
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/arlojay/e621-browser.git"
@@ -10,6 +13,7 @@
     "e621",
     "browser",
     "porn",
+    "furry",
     "quick",
     "shorts"
   ],
