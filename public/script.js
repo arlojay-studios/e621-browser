@@ -7,6 +7,7 @@ const commentsIcon = document.querySelector("#comments .fas");
 const download = document.querySelector("#download .fas");
 const infoIcon = document.querySelector("#info .fas");
 const popup = document.querySelector('.popup');
+const tagsList = document.queryCommandIndeterm('#tagsList')
 const popupText = document.querySelector('#popupText');
 const blacklistedTags = [
     "gore",
@@ -126,7 +127,8 @@ async function load() {
 
     resizeImage()
 
-    
+    popupText.innerText = post.description;
+    tagsList.innerText = post.tags.general;
     likes.innerText = post.score.total;
     comments.innerText = post.comment_count;
     download.addEventListener("click", e => window.open(post.file.url));
@@ -161,6 +163,6 @@ let i = 0;
     }
 })
 
-infoIcon.addEventListener("onclick", e => {
-   popupText.classList.toggle("visible");
+infoIcon.addEventListener("click", e => {
+   popup.classList.toggle("visible")
 })
