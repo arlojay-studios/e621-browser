@@ -114,6 +114,16 @@ async function load() {
 
     resizeImage()
 
+    const likes = document.querySelector("#likes .count");
+    likes.innerText = post.score.total;
+
+    const comments = document.querySelector("#comments .count");
+    comments.innerText = post.comment_count;
+
+    const download = document.querySelector("#download .fas");
+    download.addEventListener("click", e => window.open(post.file.url));
+
+
     const profile = await getUserProfile(post.uploader_id);
     console.log(profile);
 }
