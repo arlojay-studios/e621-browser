@@ -7,7 +7,8 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/arlojay/e621-browser.git"
+    "url": "git+https://github.com/arlojay/e621-browser.git",
+    "pages-push": "git subtree push --prefix public origin gh-pages"
   },
   "keywords": [
     "e621",
