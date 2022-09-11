@@ -127,6 +127,9 @@ body {
         outline: 0.5vh solid currentcolor;
         border-radius: 5vh;
     }
+    #author-name {
+        font-size: 3vh;
+    }
 }
 @media (max-aspect-ratio: 2/3) {
     #sidebar {
@@ -145,6 +148,9 @@ body {
         outline: 0.5vw solid currentcolor;
         border-radius: 7vw;
     }
+    #author-name {
+        font-size: 5vw;
+    }
 }
 
 #bottombar {
@@ -162,23 +168,40 @@ body {
 }
 #author-name {
     text-align: center;
-    font-size: 2vw;
     color: inherit;
     text-decoration: none;
     width: max-content;
     font-weight: bold;
 }
 
-#image {
+#images {
     grid-area: 1 / 1 / 3 / 3;
     display: grid;
+
+    overflow: hidden;
+
+    height: 100%;
+
+    align-items: center;
+
+    grid-template-columns: 1fr;
+    grid-template-rows: repeat(3, 90vh);
 
     align-content: center;
     justify-items: center;
 }
-#image > img {
-    grid-area: 1 / 1 / 2 / 2;
+#images > img {
     box-shadow: 0px 0px 2vw #0008;
+}
+
+#previous-image {
+    grid-area: 1 / 1 / 2 / 2;
+}
+#current-image {
+    grid-area: 2 / 1 / 3 / 2;
+}
+#next-image {
+    grid-area: 3 / 1 / 4 / 2;
 }
 
 .imagepreview {
@@ -202,4 +225,68 @@ body {
     overflow: hidden;
     text-overflow: ellipsis;
     line-clamp: 2;
+}
+
+@keyframes animation-down {
+    0% {
+        color: currentColor;
+        transform: scale(1);
+    }
+    100% {
+        color: currentColor;
+        transform: scale(1.2);
+    }
+}
+
+@keyframes animation-up {
+    0% {
+        color: currentColor;
+        transform: scale(1.2);
+    }
+    100% {
+        color: currentColor;
+        transform: scale(1);
+    }
+}
+
+#likes i:active {
+    animation: animation-down .15s ease-in;
+    animation-fill-mode: forwards;
+}
+#likes i:not(:active) {
+    animation: animation-up .15s ease-out;
+}
+
+#info i:active {
+    animation: animation-down .15s ease-in;
+    animation-fill-mode: forwards;
+}
+#info i:not(:active) {
+    animation: animation-up .15s ease-out;
+}
+.popup {
+    position: fixed;
+    visibility: hidden;
+    width: 86%;
+    height: 5%;
+    margin: 2%;
+    z-index: 2;
+    background-color: #0a0a0a;
+    backdrop-filter: blur(8vw) brightness(0.8);
+    border-radius: 9px;
+    border: 5px white;
+}
+
+#popupText {
+    padding-top: 5px;
+    margin-left: 2%;
+}
+
+#tagsList {
+    padding-top: 5px;
+    margin-left: 2%;
+}
+
+.visible {
+    visibility: visible;
 }
