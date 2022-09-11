@@ -13,6 +13,11 @@ const blacklistedTags = [
     "peeing",
 ]
 
+const searchParams = new URLSearchParams();
+searchParams.set("tags", "score:10..50 -animated -comic order:random");
+searchParams.set("limit", 1);
+searchParams.set("page", 1);
+
 function cloneTemplate(id) {
     const template = document.querySelector("#template_" + id);
     const clone = template.content.cloneNode(true);
@@ -33,11 +38,11 @@ function addPost(post, onLoaded) {
     return parentElem;
 }
 
-async function getPost(index) {
+async function getPost() {
     const headers = new Headers();
     headers.append("User-Agent", "arlojay/1.0");
 
-    const req = await fetch(WEBSITE_URL + "/posts.json?limit=1&page=" + index, {
+    const req = await fetch(WEBSITE_URL + "/posts.json?"+searchParams, {
         method: "GET", headers
     })
     const res = await req.json();
@@ -55,15 +60,15 @@ async function getUserProfile(uid) {
 
         return {
             profile: profileResponse,
-            icon: profilePicturePostResponse
+            icon: profilePicturePostResponse.post
         }
     } else {
         return {
             profile: profileResponse,
             icon: {
-                preview: { url: "e621-no-profile.png" },
-                sample: { url: "e621-no-profile.png" },
-                file: { url: "e621-no-profile.png" }
+                preview: { url: "public/e621-no-profile.png" },
+                sample: { url: "public/e621-no-profile.png" },
+                file: { url: "public/e621-no-profile.png" }
             }
         }
     }
@@ -84,7 +89,7 @@ function resizeImage() {
 }
 
 async function load() {
-    const post = await getPost(0);
+    const post = await getPost();
     const imageElem = document.querySelector("#image").querySelector("img");
     imageElem.src = post.file.url;
 
@@ -114,8 +119,21 @@ async function load() {
 
     resizeImage()
 
+    const likes = document.querySelector("#likes .count");
+    likes.innerText = post.score.total;
+
+    const comments = document.querySelector("#comments .count");
+    comments.innerText = post.comment_count;
+
+    const download = document.querySelector("#download .fas");
+    download.addEventListener("click", e => window.open(post.file.url));
+
+
     const profile = await getUserProfile(post.uploader_id);
     console.log(profile);
+
+    document.querySelector("#author img").src = profile.icon.preview.url;
+    document.querySelector("#author-name").innerText = profile.profile.name;
 }
 
 load().catch(e => {
