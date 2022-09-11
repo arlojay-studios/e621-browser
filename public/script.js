@@ -1,6 +1,14 @@
 const WEBSITE_URL = "https://e621.net";
 const blacklistPage = document.querySelector("#blacklist-warning");
-
+const likes = document.querySelector("#likes .count");
+const likesIcon = document.querySelector("#likes .far");
+const comments = document.querySelector("#comments .count");
+const commentsIcon = document.querySelector("#comments .fas");
+const download = document.querySelector("#download .fas");
+const infoIcon = document.querySelector("#info .fas");
+const popup = document.querySelector('.popup');
+const tagsList = document.queryCommandIndeterm('#tagsList')
+const popupText = document.querySelector('#popupText');
 const blacklistedTags = [
     "gore",
     "scat",
@@ -239,13 +247,10 @@ function load(post) {
     }
 
 
-    const likes = document.querySelector("#likes .count");
+    popupText.innerText = post.description;
+    tagsList.innerText = post.tags.general;
     likes.innerText = post.score.total;
-
-    const comments = document.querySelector("#comments .count");
     comments.innerText = post.comment_count;
-
-    const download = document.querySelector("#download .fas");
     download.addEventListener("click", e => window.open(post.file.url));
 
 
@@ -265,4 +270,19 @@ window.addEventListener("resize", e => {
 
 blacklistPage.querySelector("button").addEventListener("click", e => {
     blacklistPage.hidden = true;
+})
+
+let i = 0;
+
+ likesIcon.addEventListener("mousedown", e => {
+    i++;
+    if (i % 2 != 0) {
+        likesIcon.style.color = "#f88";
+    } else {
+        likesIcon.style.color = "#fff";
+    }
+})
+
+infoIcon.addEventListener("click", e => {
+   popup.classList.toggle("visible")
 })

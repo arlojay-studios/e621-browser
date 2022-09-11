@@ -226,3 +226,67 @@ body {
     text-overflow: ellipsis;
     line-clamp: 2;
 }
+
+@keyframes animation-down {
+    0% {
+        color: currentColor;
+        transform: scale(1);
+    }
+    100% {
+        color: currentColor;
+        transform: scale(1.2);
+    }
+}
+
+@keyframes animation-up {
+    0% {
+        color: currentColor;
+        transform: scale(1.2);
+    }
+    100% {
+        color: currentColor;
+        transform: scale(1);
+    }
+}
+
+#likes i:active {
+    animation: animation-down .15s ease-in;
+    animation-fill-mode: forwards;
+}
+#likes i:not(:active) {
+    animation: animation-up .15s ease-out;
+}
+
+#info i:active {
+    animation: animation-down .15s ease-in;
+    animation-fill-mode: forwards;
+}
+#info i:not(:active) {
+    animation: animation-up .15s ease-out;
+}
+.popup {
+    position: fixed;
+    visibility: hidden;
+    width: 86%;
+    height: 5%;
+    margin: 2%;
+    z-index: 2;
+    background-color: #0a0a0a;
+    backdrop-filter: blur(8vw) brightness(0.8);
+    border-radius: 9px;
+    border: 5px white;
+}
+
+#popupText {
+    padding-top: 5px;
+    margin-left: 2%;
+}
+
+#tagsList {
+    padding-top: 5px;
+    margin-left: 2%;
+}
+
+.visible {
+    visibility: visible;
+}
