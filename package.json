@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "An e621 browser inspired by quick-scrolling content apps such as Tiktok and YouTube Shorts.",
   "scripts": {
-    "serve": "npx serve public",
+    "serve": "npx serve .",
     "pages-push": "git subtree push --prefix public origin gh-pages"
   },
   "repository": {
