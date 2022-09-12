@@ -1,14 +1,5 @@
 const WEBSITE_URL = "https://e621.net";
-const blacklistPage = document.querySelector("#blacklist-warning");
-const likes = document.querySelector("#likes .count");
-const likesIcon = document.querySelector("#likes .far");
-const comments = document.querySelector("#comments .count");
-const commentsIcon = document.querySelector("#comments .fas");
-const download = document.querySelector("#download .fas");
-const infoIcon = document.querySelector("#info .fas");
-const popup = document.querySelector('.popup');
-const tagsList = document.queryCommandIndeterm('#tagsList')
-const popupText = document.querySelector('#popupText');
+const CACHE_HEADROOM = 12;
 const blacklistedTags = [
     "gore",
     "scat",
@@ -18,23 +9,33 @@ const blacklistedTags = [
     "shota",
     "feces",
     "fart",
-    "peeing",
+    "peeing"
 ]
 
+
+const blacklistPage = document.querySelector("#blacklist-warning");
+const likes = document.querySelector("#likes");
+const comments = document.querySelector("#comments");
+const download = document.querySelector("#download .fas");
+const infoIcon = document.querySelector("#info .fas");
+const popup = document.querySelector("#description-popup");
+const tagsList = document.queryCommandIndeterm('#tagsList')
+const popupText = document.querySelector('#popupText');
+
+const prevButton = document.querySelector("#prev-button");
+const nextButton = document.querySelector("#next-button");
+
+
 const searchParams = new URLSearchParams();
-searchParams.set("tags", "score:10..50 -animated -comic order:random");
+searchParams.set("tags", "score:30..200 -animated -comic order:random");
 searchParams.set("page", 1);
 
 const userProfiles = new Map();
 const postHistory = [];
 let postIndex = 0;
 
-function cloneTemplate(id) {
-    const template = document.querySelector("#template_" + id);
-    const clone = template.content.cloneNode(true);
 
-    return clone;
-}
+
 
 function addPost(post, onLoaded) {
     const parentElem = cloneTemplate("imagepreview");
@@ -63,7 +64,7 @@ async function getPosts(limit) {
 }
 
 async function updateCache(postCount = 4) {
-    if(postIndex < postHistory.length-5) return;
+    if(postIndex < postHistory.length - CACHE_HEADROOM) return;
 
     const posts = await getPosts(postCount);
     const promises = []; // updateCache() will resolve when all promises in this array are resolved
@@ -89,7 +90,7 @@ async function updateCache(postCount = 4) {
                     postHistory.push(post);
                     res();
                 }
-            }, i * 600); // Wait 600ms to prevent rate limiting
+            }, i * 1500); // Wait 1500ms to prevent rate limiting
         }));
 
         // Cache user profile
@@ -116,7 +117,7 @@ async function updateCache(postCount = 4) {
                             res();
                         }
                     })
-                }, i * 1200); // Wait 1200ms to prevent rate limiting
+                }, i * 1500); // Wait 1200ms to prevent rate limiting
             }));
         }
     }
@@ -180,24 +181,39 @@ function resizeImage(image) {
 }
 
 async function next() {
-    const post = postHistory[postIndex++];
-    console.log(post);
-    load(post);
+    const children = document.querySelector("#images").children;
+    for(let child of children) child.style.marginTop = "-180vh";
 
-    updateCache();
+    setTimeout(() => {
+        for(let child of children) child.style.removeProperty("margin-top");
+
+        postIndex++;
+        const post = postHistory[postIndex];
+        console.log(post);
+        load();
+
+        updateCache();
+    }, 200);
 }
 async function prev() {
-    postIndex--;
-    if(postIndex < 0) postIndex = 0;
+    const children = document.querySelector("#images").children;
+    for(let child of children) child.style.marginTop = "180vh";
 
-    const post = postHistory[postIndex];
-    console.log(post);
-    load(post);
+    setTimeout(() => {
+        for(let child of children) child.style.removeProperty("margin-top");
 
-    updateCache();
+        postIndex--;
+        if(postIndex < 0) postIndex = 0;
+        const post = postHistory[postIndex];
+        console.log(post);
+        load();
+
+        updateCache();
+    }, 200);
 }
 
-function load(post) {
+function load() {
+    const post = postHistory[postIndex];
 
     // Move images along
     document.querySelector("#previous-image")?.remove();
@@ -222,14 +238,11 @@ function load(post) {
 
     blacklistPage.hidden = true;
 
-    const blacklist = [];
+    const allTags = [];
     for(let k of Object.keys(post.tags)) {
-        post.tags[k].filter(d => 
-            blacklistedTags.includes(d)
-        ).forEach(b =>
-            blacklist.push(b)
-        );
+        post.tags[k].forEach(b => allTags.push(b));
     }
+    const blacklist = allTags.filter(d => blacklistedTags.includes(d));
 
     if(blacklist.length > 0) {
         blacklistPage.hidden = false;
@@ -246,11 +259,22 @@ function load(post) {
         }
     }
 
+    const tagListElement = popup.querySelector("ul");
+    for(let child of tagListElement.children) child.remove()
+    for(let tag of allTags.sort()) {
+        const li = document.createElement("li");
+        li.innerText = tag[0].toUpperCase() + tag.slice(1);
+        tagListElement.appendChild(li);
+    }
 
-    popupText.innerText = post.description;
-    tagsList.innerText = post.tags.general;
-    likes.innerText = post.score.total;
-    comments.innerText = post.comment_count;
+
+    popup.querySelector("p").innerText = post.description.length > 0 ? post.description : "No description";
+    popup.querySelector(".rating").innerText = {"q":"Questionable","s":"Safe","e":"Explicit"}[post.rating];
+    popup.querySelector(".approver").innerText = post.approver_id;
+    popup.querySelector(".creation").innerText = new Date(post.created_at);
+    popup.querySelector(".update").innerText = new Date(post.updated_at);
+    likes.querySelector(".count").innerText = post.score.total;
+    comments.querySelector(".count").innerText = post.comment_count;
     download.addEventListener("click", e => window.open(post.file.url));
 
 
@@ -258,8 +282,6 @@ function load(post) {
     document.querySelector("#author img").src = profile?.icon.preview.url ?? "public/no-profile.png";
     document.querySelector("#author-name").innerText = profile?.profile.name ?? "Anonymous";
 }
-
-updateCache(2).then(next);
 
 window.addEventListener("resize", e => {
     resizeImage(document.querySelector("#previous-image"))
@@ -272,17 +294,30 @@ blacklistPage.querySelector("button").addEventListener("click", e => {
     blacklistPage.hidden = true;
 })
 
-let i = 0;
+likes.addEventListener("click", e => {
+    const icon = likes.querySelector("i");
 
- likesIcon.addEventListener("mousedown", e => {
-    i++;
-    if (i % 2 != 0) {
-        likesIcon.style.color = "#f88";
-    } else {
-        likesIcon.style.color = "#fff";
+    likes.classList.toggle("activated");
+
+    icon.classList.toggle("far");
+    icon.classList.toggle("fas");
+})
+// Close by clicking anywhere on the screen
+document.body.addEventListener("click", e => {
+    const bounds = popup.getBoundingClientRect();
+
+    if(bounds.top > e.clientY) {
+        popup.classList.remove("open");
     }
 })
-
 infoIcon.addEventListener("click", e => {
-   popup.classList.toggle("visible")
+    // Janky method to wait 1ms
+    setTimeout(() => popup.classList.toggle("open"));
 })
+
+
+
+
+updateCache(2).then(load);
+prevButton.addEventListener("click", e => prev())
+nextButton.addEventListener("click", e => next())
