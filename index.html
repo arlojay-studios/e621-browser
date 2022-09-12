@@ -6,6 +6,7 @@
         <meta name="viewport" content="width=device-width">
         <title>My Drive - Google Drive</title>
         <link href="public/style.css" rel="stylesheet" type="text/css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
         <link href="public/icon.png" rel="icon" type="image/x-icon" />
 
         <script src="https://kit.fontawesome.com/e072369c31.js" crossorigin="anonymous"></script>
@@ -23,9 +24,21 @@
                 </ul>
                 <button>Show anyways</button>
             </div>  
-            <div class="popup">
+            <!-- <div class="popup">
                 <marquee id="popupText">0</marquee>
                 <marquee id="tagsList">0</marquee>
+            </div> -->
+            <div id="description-popup">
+                <h2>Description</h2>
+                <p>No description</p>
+                <h2>Tags</h2>
+                <ul id="tags">
+                </ul>
+                <h2>Misc</h2>
+                <span class="rating">Questionable</span>
+                <div class="approver">Anonymous</div>
+                <time class="creation">Jan 1, 2000</time>
+                <time class="update">Dec 31, 2999</time>
             </div>
             <div id="sidebar">
                 <div id="info">
@@ -56,6 +69,11 @@
                     <img src="public/loading.png">
                 </div>
             </div>
+        </div>
+
+        <div id="interaction-buttons">
+            <button id="prev-button">^</button>
+            <button id="next-button">^</button>
         </div>
     </body>
 
