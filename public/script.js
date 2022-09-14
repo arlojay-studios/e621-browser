@@ -27,7 +27,7 @@ const nextButton = document.querySelector("#next-button");
 
 
 const searchParams = new URLSearchParams();
-searchParams.set("tags", "score:30..200 -animated -comic order:random");
+searchParams.set("tags", "score:>100 -animated -comic order:random");
 searchParams.set("page", 1);
 
 const userProfiles = new Map();
@@ -281,6 +281,7 @@ function load() {
     const profile = userProfiles.get(post.uploader_id);
     document.querySelector("#author img").src = profile?.icon.preview.url ?? "public/no-profile.png";
     document.querySelector("#author-name").innerText = profile?.profile.name ?? "Anonymous";
+    // document.querySelector("#author-name").href = profile?.profile. ? "/null"
 }
 
 window.addEventListener("resize", e => {
@@ -341,13 +342,17 @@ addEventListener("keydown", e => {
 });
 
 addEventListener("wheel", e => {
-    if (e.deltaY < 0.1) {
-        prev();
-        console.log(e.deltaY);
-    } else if (e.deltaY > 0.1) {
-        next();
-        
+    switch(popup.classList.contains("open")) {
+        case false: 
+            if (e.deltaY < 0.1) {
+                prev();
+                console.log(e.deltaY);
+            } else if (e.deltaY > 0.1) {
+                next();
+            }
+            break;
     }
+    
     if(performance.now() - lastKeyPress < 10) return true
     lastKeyPress = performance.now();    
 })
