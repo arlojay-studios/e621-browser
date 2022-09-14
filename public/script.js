@@ -294,14 +294,16 @@ blacklistPage.querySelector("button").addEventListener("click", e => {
     blacklistPage.hidden = true;
 })
 
-likes.addEventListener("click", e => {
+likes.addEventListener("click", e => like());
+
+function like() {
     const icon = likes.querySelector("i");
 
     likes.classList.toggle("activated");
 
     icon.classList.toggle("far");
     icon.classList.toggle("fas");
-})
+}
 // Close by clicking anywhere on the screen
 document.body.addEventListener("click", e => {
     const bounds = popup.getBoundingClientRect();
@@ -315,7 +317,40 @@ infoIcon.addEventListener("click", e => {
     setTimeout(() => popup.classList.toggle("open"));
 })
 
+let lastKeyPress = 0;
 
+addEventListener("keydown", e => {
+    if(performance.now() - lastKeyPress < 10) return true
+    lastKeyPress = performance.now(); 
+
+    switch (e.key.toUpperCase()) {
+        case "ARROWUP":
+        case "W":
+            prev();
+            break;
+        case "ARROWDOWN":
+        case "S":
+            next();
+            break;
+        case "F":
+            like();
+            break;
+
+
+    }
+});
+
+addEventListener("wheel", e => {
+    if (e.deltaY < 0.1) {
+        prev();
+        console.log(e.deltaY);
+    } else if (e.deltaY > 0.1) {
+        next();
+        
+    }
+    if(performance.now() - lastKeyPress < 10) return true
+    lastKeyPress = performance.now();    
+})
 
 
 updateCache(2).then(load);
